@@ -1,0 +1,18 @@
+{
+  "author": "Eric Zhang (http://ericzhang.com)",
+  "name": "binaryjs",
+  "description": "Binary realtime streaming made easy",
+  "version": "0.0.0",
+  "homepage": "http://binaryjs.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/binaryjs/binaryjs.git"
+  },
+  "main": "lib/server.js",
+  "engines": {
+    "node": "~0.6.11"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
