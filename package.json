@@ -8,11 +8,13 @@
     "type": "git",
     "url": "git://github.com/binaryjs/binaryjs.git"
   },
-  "main": "lib/server.js",
+  "main": "lib/binaryserver.js",
   "engines": {
-    "node": "~0.6.11"
+    "node": ">0.6.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "binaryws": "~0.0.0"
+  },
   "devDependencies": {},
   "optionalDependencies": {}
 }
