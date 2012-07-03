@@ -7,7 +7,7 @@ server.on('connection', function(stream){
   
   console.log('New user connected');
   
-  var file = fs.createReadStream('test.avi');
+  var file = fs.createReadStream('flower.png');
 
   file.pipe(stream);
   
