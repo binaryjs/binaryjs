@@ -1,14 +1,15 @@
-var binaryjs = require('binaryjs');
+var BinaryServer = require('binaryjs').BinaryServer;
 var fs = require('fs');
 
-var server = new binaryjs.BinaryServer({port: 9000});
+var server = BinaryServer({port: 9000});
 
 server.on('connection', function(stream){
   
-  stream.on('close', function(){console.log('stream closed')});
+  console.log('New user connected');
   
-  var fd = fs.createReadStream('test.avi');
-  fd.pipe(stream, {end: false});
+  var file = fs.createReadStream('test.avi');
+
+  file.pipe(stream);
   
 });
 
