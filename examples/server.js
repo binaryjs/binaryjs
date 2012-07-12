@@ -3,7 +3,7 @@ var fs = require('fs');
 
 var server = BinaryServer({port: 9000});
 
-server.on('connection', function(stream){
+server.on('connection', function(user){
   
   console.log('New user connected');
   
