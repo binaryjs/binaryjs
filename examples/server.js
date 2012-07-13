@@ -4,21 +4,30 @@ var express = require('express');
 var app = express.createServer();
 
 app.use(express.static(__dirname + '/public'));
-
-
 app.listen(9001);
 
+
+
+
+
+
+// Start Binary.js server
 var server = BinaryServer({port: 9000});
 
+// Wait for new user connections
 server.on('connection', function(client){
   
   console.log('New user connected');
   
-  var stream = client.createStream();
-  var file = fs.createReadStream(__dirname + '/big.avi');
-  file.pipe(stream);
-  stream.on('drain', function(){console.log('drain')});
-  stream.on('close', function(){console.log('close')});
+  // Incoming stream from browsers
+  client.on('stream', function(stream){
+    var w = fs.createWriteStream(stream.id+'.txt');
+    stream.pipe(w);
+  });
+  
+  // Stream a flower as a hello!
+  var file = fs.createReadStream(__dirname + '/flower.png');
+  file.pipe(client.createStream());
   
 });
 

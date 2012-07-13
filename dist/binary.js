@@ -322,8 +322,6 @@ var util = {
     });
   },
   info: console.log.bind(console),
-  warning: function(){},
-  error: function(){},
   pack: BinaryPack.pack,
   unpack: BinaryPack.unpack
 };
@@ -397,7 +395,6 @@ BinaryStream.prototype._write = function(code, data, bonus, cb) {
 BinaryStream.prototype.write = function(data, cb) {
   if(this.writable) {
     var out = this._write(2, data, this.id, cb);
-    console.log(out);
     return !this._paused && out;
   } else {
     throw new Error('Stream is not writable');

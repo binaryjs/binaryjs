@@ -3,19 +3,36 @@
   <script src="binarypack.js"></script>
   <script src="binary.js"></script>
   <script>
-  var i = 0;
+  
+    // Connect to Binary.js server
     var client = new BinaryClient('ws://localhost:9000');
+    
+    
+    // Log errors
+    client.on('error', console.log.bind(console));
+    
+    // Received new stream from server!
     client.on('stream', function(stream, meta){
-      console.log('stream started', stream, meta);
+      
+      // Buffer for parts
+      var parts = [];
+      
+      // Got new data
+      stream.on('data', function(data){
+        parts.push(new Uint8Array(data));
+      });
       
       
-      window.stream = stream;
-      stream.pause();
+      stream.on('end', function(){
       
-      stream.on('end', function(){console.log('stream ended')});
+        // Display new data in browser!
+        var img = document.createElement("img");
+        img.src = window.webkitURL.createObjectURL(new Blob(parts));;
+        document.body.appendChild(img);
+        console.log('Stream completed', stream.id)});
     });
     
-    client.on('error', function(){console.log(arguments);});
+    
     
   </script>
 </head>
