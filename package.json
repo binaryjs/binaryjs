@@ -13,9 +13,7 @@
     "node": ">0.6.0"
   },
   "dependencies": {
-    "streamws": "git://github.com/binaryjs/streamws.git#master",
-    "binarypack": "git://github.com/binaryjs/node-binarypack.git#master"
-  },
-  "devDependencies": {},
-  "optionalDependencies": {}
+    "streamws" : "~0.0.0",
+    "binarypack": "~0.0.0"
+  }
 }
