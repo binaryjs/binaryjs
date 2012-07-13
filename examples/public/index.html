@@ -1,0 +1,25 @@
+<html>
+<head>
+  <script src="binarypack.js"></script>
+  <script src="binary.js"></script>
+  <script>
+  var i = 0;
+    var client = new BinaryClient('ws://localhost:9000');
+    client.on('stream', function(stream, meta){
+      console.log('stream started', stream, meta);
+      
+      
+      window.stream = stream;
+      stream.pause();
+      
+      stream.on('end', function(){console.log('stream ended')});
+    });
+    
+    client.on('error', function(){console.log(arguments);});
+    
+  </script>
+</head>
+<body>
+
+</body>
+</html>
