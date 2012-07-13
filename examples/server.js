@@ -21,7 +21,7 @@ server.on('connection', function(client){
   
   // Incoming stream from browsers
   client.on('stream', function(stream){
-    var w = fs.createWriteStream(stream.id+'.txt');
+    var w = fs.createWriteStream(__dirname+ '/' + stream.id+'.txt');
     stream.pipe(w);
   });
   
