@@ -12,9 +12,10 @@ var fs = require('fs')
  * @api private
  */
 
-var template = '/*! binary.%ext% build:' + package.version + ', %type%. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */\n'
+var template = '/*! binary.%ext% build:' + package.version + ', %type%. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */\n(function(exports){\n'
   , development = template.replace('%type%', 'development').replace('%ext%', 'js')
-  , production = template.replace('%type%', 'production').replace('%ext%', 'min.js');
+  , production = template.replace('%type%', 'production').replace('%ext%', 'min.js')
+  , suffix = '\n})(this);\n';
 
 /**
  * If statements, these allows you to create serveride & client side compatible
@@ -145,6 +146,8 @@ var builder = module.exports = function () {
           return ret == 0;
         }).join('\n');
       }
+      
+      code += suffix;
 
       // check if we need to process it any further
       if (settings.minify) {
