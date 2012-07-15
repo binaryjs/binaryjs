@@ -27,7 +27,7 @@
       
         // Display new data in browser!
         var img = document.createElement("img");
-        img.src = window.webkitURL.createObjectURL(new Blob(parts));;
+        img.src = window.webkitURL.createObjectURL(new Blob(parts));
         document.body.appendChild(img);
         console.log('Stream completed', stream.id)});
     });
