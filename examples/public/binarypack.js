@@ -1,4 +1,22 @@
 /*! binarypack.js build:0.0.0, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+var binaryFeatures = {
+  useBlobBuilder: (function(){
+    try {
+      new Blob([]);
+      return false;
+    } catch (e) {
+      return true;
+    }
+  })(),
+  useArrayBufferView: (function(){
+    try {
+      return (new Blob([new Uint8Array([])])).size === 0;
+    } catch (e) {
+      return true;
+    }
+  })()
+};
+
 var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
 
 function BufferBuilder(){
@@ -25,11 +43,15 @@ BufferBuilder.prototype._flush = function() {
 
 BufferBuilder.prototype.getBuffer = function() {
   this._flush();
-  var builder = new BlobBuilder();
-  for(var i = 0, ii = this._parts.length; i < ii; i++) {
-    builder.append(this._parts[i]);
+  if(binaryFeatures.useBlobBuilder) {
+    var builder = new BlobBuilder();
+    for(var i = 0, ii = this._parts.length; i < ii; i++) {
+      builder.append(this._parts[i]);
+    }
+    return builder.getBlob();
+  } else {
+    return new Blob(this._parts);
   }
-  return builder.getBlob();
 };
 BinaryPack = {
   unpack: function(data){
@@ -311,9 +333,17 @@ BinaryPack.Packer.prototype.pack = function(value){
       if (constructor == Array){
         this.pack_array(value);
       } else if (constructor == ArrayBuffer) {
-        this.pack_bin(new Uint8Array(value));
+        if(binaryFeatures.useArrayBufferView) {
+          this.pack_bin(new Uint8Array(value));
+        } else {
+          this.pack_bin(value);
+        }
       } else if (Uint8Array.prototype.__proto__.isPrototypeOf(value) || constructor == Blob){
-        this.pack_bin(value);
+        if(binaryFeatures.useArrayBufferView) {
+          this.pack_bin(value);
+        } else {
+          this.pack_bin(value.buffer);
+        }
       } else if (constructor == Object){
         this.pack_object(value);
       } else if (constructor == Date){
