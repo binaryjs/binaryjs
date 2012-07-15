@@ -36,6 +36,9 @@ BufferBuilder.prototype.append = function(data) {
 BufferBuilder.prototype._flush = function() {
   if (this._pieces.length > 0) {    
     var buf = new Uint8Array(this._pieces);
+    if(!binaryFeatures.useArrayBufferView) {
+      buf = buf.buffer;
+    }
     this._parts.push(buf);
     this._pieces = [];
   }
