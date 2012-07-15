@@ -19,7 +19,7 @@
       
       // Got new data
       stream.on('data', function(data){
-        parts.push(new Uint8Array(data));
+        parts.push(data);
       });
       
       
