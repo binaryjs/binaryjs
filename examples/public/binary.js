@@ -521,7 +521,6 @@ function BinaryClient(socket) {
       if(data.hasOwnProperty('data')){
         data = data.data;
       }
-      
       data = util.unpack(data);
       switch(data[0]) {
         case 0:

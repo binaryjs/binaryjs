@@ -1,4 +1,6 @@
 /*! binarypack.js build:0.0.0, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
+
 function BufferBuilder(){
   this._pieces = [];
   this._parts = [];
@@ -23,7 +25,11 @@ BufferBuilder.prototype._flush = function() {
 
 BufferBuilder.prototype.getBuffer = function() {
   this._flush();
-  return new Blob(this._parts);
+  var builder = new BlobBuilder();
+  for(var i = 0, ii = this._parts.length; i < ii; i++) {
+    builder.append(this._parts[i]);
+  }
+  return builder.getBlob();
 };
 BinaryPack = {
   unpack: function(data){
