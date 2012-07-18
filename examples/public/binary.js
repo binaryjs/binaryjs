@@ -1,4 +1,4 @@
-/*! binary.js build:0.0.1, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.0.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /**
  * EventEmitter v3.1.5
@@ -310,6 +310,14 @@ var util = {
       }
     });
   },
+  extend: function(dest, source) {
+    for(var key in source) {
+      if(source.hasOwnProperty(key)) {
+        dest[key] = source[key];
+      }
+    }
+    return dest;
+  },
   info: console.log.bind(console),
   pack: BinaryPack.pack,
   unpack: BinaryPack.unpack,
@@ -344,9 +352,102 @@ var util = {
   }(this))
 };
 
-// Stream shim for client side
-var Stream = EventEmitter;
+// For browser-side code compatibility
+// No-op for Node.js
+var Buffer = {isBuffer: function(){return false;}};
 
+
+
+function Stream() {
+  EventEmitter.call(this);
+}
+
+util.inherits(Stream, EventEmitter);
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
+  }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+  }
+
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (this.listeners('error').length === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('end', cleanup);
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('end', cleanup);
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
+};
 
 function BinaryStream(socket, id, create, meta) {
   if (!(this instanceof BinaryStream)) return new BinaryStream(options);
@@ -456,13 +557,16 @@ BinaryStream.prototype.resume = function() {
 };
 
 
-function BinaryClient(socket) {
+function BinaryClient(socket, options) {
   if (!(this instanceof BinaryClient)) return new BinaryClient(options);
   
   EventEmitter.call(this);
   
   var self = this;
   
+  this._options = util.extend({
+    chunkSize: 40960
+  }, options);
   
   this._streams = {};
   
@@ -478,6 +582,9 @@ function BinaryClient(socket) {
   
   this._socket.binaryType = 'arraybuffer';
   
+  this._socket.addEventListener('open', function(){
+    self.emit('open');
+  });
   this._socket.addEventListener('error', function(error){
     self.emit('error', error);
   });
@@ -591,11 +698,29 @@ function BinaryClient(socket) {
 util.inherits(BinaryClient, EventEmitter);
 
 BinaryClient.prototype.send = function(data, meta){
+  var stream = this.createStream(meta);
   if(data instanceof Stream) {
-    data.pipe(this.createStream(meta));
+    data.pipe(stream);
+  } else if (Buffer.isBuffer(data)) {
+    (new BufferReadStream(data, {chunkSize: this._options.chunkSize})).pipe(stream);
+  } else if (data.constructor === window.Blob || data.constructor == window.ArrayBuffer) {
+    (new BlobReadStream(data, {chunkSize: this._options.chunkSize})).pipe(stream);
+  } else if (typeof data === 'object' && 'BYTES_PER_ELEMENT' in data) {
+    var blob;
+    if(!binaryFeatures.useArrayBufferView) {
+      // Warn
+      data = data.buffer;
+    }
+    if(binaryFeatures.useBlobBuilder) {
+      var builder = new BlobBuilder();
+      builder.append(data);
+      blob = builder.getBlob()
+    } else {
+      blob = new Blob([data]);
+    }
+    (new BlobReadStream(blob, {chunkSize: this._options.chunkSize})).pipe(stream);
   } else {
-    var stream = this.createStream(meta);
-    // Do chunking
+    stream.write(data);
   }
 };
 
