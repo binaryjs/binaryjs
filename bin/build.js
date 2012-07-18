@@ -40,6 +40,7 @@ var base = [
     '../deps/EventEmitter.js'
   , 'util.js'
   , 'client/stream.js'
+  , 'client/blob_stream.js'
   , 'stream.js'
   , 'client.js'
 ];
