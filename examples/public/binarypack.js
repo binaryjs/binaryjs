@@ -1,5 +1,6 @@
-/*! binarypack.js build:0.0.0, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
-var binaryFeatures = {
+/*! binarypack.js build:0.0.1, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+(function(exports){
+exports.binaryFeatures = {
   useBlobBuilder: (function(){
     try {
       new Blob([]);
@@ -17,7 +18,7 @@ var binaryFeatures = {
   })()
 };
 
-var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
+exports.BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
 
 function BufferBuilder(){
   this._pieces = [];
@@ -56,19 +57,19 @@ BufferBuilder.prototype.getBuffer = function() {
     return new Blob(this._parts);
   }
 };
-BinaryPack = {
+exports.BinaryPack = {
   unpack: function(data){
-    var unpacker = new BinaryPack.Unpacker(data);
+    var unpacker = new Unpacker(data);
     return unpacker.unpack();
   },
   pack: function(data){
-    var packer = new BinaryPack.Packer();
+    var packer = new Packer();
     var buffer = packer.pack(data);
     return buffer;
   }
 };
 
-BinaryPack.Unpacker = function(data){
+function Unpacker (data){
   // Data is ArrayBuffer
   this.index = 0;
   this.dataBuffer = data;
@@ -77,7 +78,7 @@ BinaryPack.Unpacker = function(data){
 }
 
 
-BinaryPack.Unpacker.prototype.unpack = function(){
+Unpacker.prototype.unpack = function(){
   var type = this.unpack_uint8();
   if (type < 0x80){
     var positive_fixnum = type;
@@ -160,13 +161,13 @@ BinaryPack.Unpacker.prototype.unpack = function(){
   }
 }
 
-BinaryPack.Unpacker.prototype.unpack_uint8 = function(){
+Unpacker.prototype.unpack_uint8 = function(){
   var byte = this.dataView[this.index] & 0xff;
   this.index++;
   return byte;
 };
 
-BinaryPack.Unpacker.prototype.unpack_uint16 = function(){
+Unpacker.prototype.unpack_uint16 = function(){
   var bytes = this.read(2);
   var uint16 =
     ((bytes[0] & 0xff) * 256) + (bytes[1] & 0xff);
@@ -174,7 +175,7 @@ BinaryPack.Unpacker.prototype.unpack_uint16 = function(){
   return uint16;
 }
 
-BinaryPack.Unpacker.prototype.unpack_uint32 = function(){
+Unpacker.prototype.unpack_uint32 = function(){
   var bytes = this.read(4);
   var uint32 =
      ((bytes[0]  * 256 +
@@ -185,7 +186,7 @@ BinaryPack.Unpacker.prototype.unpack_uint32 = function(){
   return uint32;
 }
 
-BinaryPack.Unpacker.prototype.unpack_uint64 = function(){
+Unpacker.prototype.unpack_uint64 = function(){
   var bytes = this.read(8);
   var uint64 =
    ((((((bytes[0]  * 256 +
@@ -201,29 +202,29 @@ BinaryPack.Unpacker.prototype.unpack_uint64 = function(){
 }
 
 
-BinaryPack.Unpacker.prototype.unpack_int8 = function(){
+Unpacker.prototype.unpack_int8 = function(){
   var uint8 = this.unpack_uint8();
   return (uint8 < 0x80 ) ? uint8 : uint8 - (1 << 8);
 };
 
-BinaryPack.Unpacker.prototype.unpack_int16 = function(){
+Unpacker.prototype.unpack_int16 = function(){
   var uint16 = this.unpack_uint16();
   return (uint16 < 0x8000 ) ? uint16 : uint16 - (1 << 16);
 }
 
-BinaryPack.Unpacker.prototype.unpack_int32 = function(){
+Unpacker.prototype.unpack_int32 = function(){
   var uint32 = this.unpack_uint32();
   return (uint32 < Math.pow(2, 31) ) ? uint32 :
     uint32 - Math.pow(2, 32);
 }
 
-BinaryPack.Unpacker.prototype.unpack_int64 = function(){
+Unpacker.prototype.unpack_int64 = function(){
   var uint64 = this.unpack_uint64();
   return (uint64 < Math.pow(2, 63) ) ? uint64 :
     uint64 - Math.pow(2, 64);
 }
 
-BinaryPack.Unpacker.prototype.unpack_raw = function(size){
+Unpacker.prototype.unpack_raw = function(size){
   if ( this.length < this.index + size){
     throw new Error('BinaryPackFailure: index is out of range'
       + ' ' + this.index + ' ' + size + ' ' + this.length);
@@ -236,7 +237,7 @@ BinaryPack.Unpacker.prototype.unpack_raw = function(size){
   return buf;
 }
 
-BinaryPack.Unpacker.prototype.unpack_string = function(size){
+Unpacker.prototype.unpack_string = function(size){
   var bytes = this.read(size);
   var i = 0, str = '', c, code;
   while(i < size){
@@ -259,7 +260,7 @@ BinaryPack.Unpacker.prototype.unpack_string = function(size){
   return str;
 }
 
-BinaryPack.Unpacker.prototype.unpack_array = function(size){
+Unpacker.prototype.unpack_array = function(size){
   var objects = new Array(size);
   for(var i = 0; i < size ; i++){
     objects[i] = this.unpack();
@@ -267,7 +268,7 @@ BinaryPack.Unpacker.prototype.unpack_array = function(size){
   return objects;
 }
 
-BinaryPack.Unpacker.prototype.unpack_map = function(size){
+Unpacker.prototype.unpack_map = function(size){
   var map = {};
   for(var i = 0; i < size ; i++){
     var key  = this.unpack();
@@ -277,7 +278,7 @@ BinaryPack.Unpacker.prototype.unpack_map = function(size){
   return map;
 }
 
-BinaryPack.Unpacker.prototype.unpack_float = function(){
+Unpacker.prototype.unpack_float = function(){
   var uint32 = this.unpack_uint32();
   var sign = uint32 >> 31;
   var exp  = ((uint32 >> 23) & 0xff) - 127;
@@ -286,7 +287,7 @@ BinaryPack.Unpacker.prototype.unpack_float = function(){
     fraction * Math.pow(2, exp - 23);
 }
 
-BinaryPack.Unpacker.prototype.unpack_double = function(){
+Unpacker.prototype.unpack_double = function(){
   var h32 = this.unpack_uint32();
   var l32 = this.unpack_uint32();
   var sign = h32 >> 31;
@@ -297,7 +298,7 @@ BinaryPack.Unpacker.prototype.unpack_double = function(){
   return (sign == 0 ? 1 : -1) * frac;
 }
 
-BinaryPack.Unpacker.prototype.read = function(length){
+Unpacker.prototype.read = function(length){
   var j = this.index;
   if (j + length <= this.length) {
     return this.dataView.subarray(j, j + length);
@@ -306,11 +307,11 @@ BinaryPack.Unpacker.prototype.read = function(length){
   }
 }
   
-BinaryPack.Packer = function(){
+function Packer (){
   this.bufferBuilder = new BufferBuilder();
 }
 
-BinaryPack.Packer.prototype.pack = function(value){
+Packer.prototype.pack = function(value){
   var type = typeof(value);
   if (type == 'string'){
     this.pack_string(value);
@@ -341,7 +342,7 @@ BinaryPack.Packer.prototype.pack = function(value){
         } else {
           this.pack_bin(value);
         }
-      } else if (Uint8Array.prototype.__proto__.isPrototypeOf(value) || constructor == Blob){
+      } else if ('BYTES_PER_ELEMENT' in value || constructor == Blob){
         if(binaryFeatures.useArrayBufferView) {
           this.pack_bin(value);
         } else {
@@ -364,7 +365,7 @@ BinaryPack.Packer.prototype.pack = function(value){
 }
 
 
-BinaryPack.Packer.prototype.pack_bin = function(blob){
+Packer.prototype.pack_bin = function(blob){
   var length = blob.length || blob.byteLength || blob.size;
   if (length <= 0x1f){
     this.pack_uint8(0xa0 + length);
@@ -381,7 +382,7 @@ BinaryPack.Packer.prototype.pack_bin = function(blob){
   this.bufferBuilder.append(blob);
 }
 
-BinaryPack.Packer.prototype.pack_string = function(str){
+Packer.prototype.pack_string = function(str){
   var length = str.length;
   if (length <= 0x1f){
     this.pack_uint8(0xb0 + length);
@@ -398,7 +399,7 @@ BinaryPack.Packer.prototype.pack_string = function(str){
   this.bufferBuilder.append(str);
 }
 
-BinaryPack.Packer.prototype.pack_array = function(ary){
+Packer.prototype.pack_array = function(ary){
   var length = ary.length;
   if (length <= 0x0f){
     this.pack_uint8(0x90 + length);
@@ -416,7 +417,7 @@ BinaryPack.Packer.prototype.pack_array = function(ary){
   }
 }
 
-BinaryPack.Packer.prototype.pack_integer = function(num){
+Packer.prototype.pack_integer = function(num){
   if ( -0x20 <= num && num <= 0x7f){
     this.bufferBuilder.append(num & 0xff);
   } else if (0x00 <= num && num <= 0xff){
@@ -448,7 +449,7 @@ BinaryPack.Packer.prototype.pack_integer = function(num){
   }
 }
 
-BinaryPack.Packer.prototype.pack_double = function(num){
+Packer.prototype.pack_double = function(num){
   var sign = 0;
   if (num < 0){
     sign = 1;
@@ -466,7 +467,7 @@ BinaryPack.Packer.prototype.pack_double = function(num){
   this.pack_int32(l32);
 }
 
-BinaryPack.Packer.prototype.pack_object = function(obj){
+Packer.prototype.pack_object = function(obj){
   var keys = Object.keys(obj);
   var length = keys.length;
   if (length <= 0x0f){
@@ -488,16 +489,16 @@ BinaryPack.Packer.prototype.pack_object = function(obj){
   }
 }
 
-BinaryPack.Packer.prototype.pack_uint8 = function(num){
+Packer.prototype.pack_uint8 = function(num){
   this.bufferBuilder.append(num);
 }
 
-BinaryPack.Packer.prototype.pack_uint16 = function(num){
+Packer.prototype.pack_uint16 = function(num){
   this.bufferBuilder.append(num >> 8);
   this.bufferBuilder.append(num & 0xff);
 }
 
-BinaryPack.Packer.prototype.pack_uint32 = function(num){
+Packer.prototype.pack_uint32 = function(num){
   var n = num & 0xffffffff;
   this.bufferBuilder.append((n & 0xff000000) >>> 24);
   this.bufferBuilder.append((n & 0x00ff0000) >>> 16);
@@ -505,7 +506,7 @@ BinaryPack.Packer.prototype.pack_uint32 = function(num){
   this.bufferBuilder.append((n & 0x000000ff));
 }
 
-BinaryPack.Packer.prototype.pack_uint64 = function(num){
+Packer.prototype.pack_uint64 = function(num){
   var high = num / Math.pow(2, 32);
   var low  = num % Math.pow(2, 32);
   this.bufferBuilder.append((high & 0xff000000) >>> 24);
@@ -518,23 +519,23 @@ BinaryPack.Packer.prototype.pack_uint64 = function(num){
   this.bufferBuilder.append((low  & 0x000000ff));
 }
 
-BinaryPack.Packer.prototype.pack_int8 = function(num){
+Packer.prototype.pack_int8 = function(num){
   this.bufferBuilder.append(num & 0xff);
 }
 
-BinaryPack.Packer.prototype.pack_int16 = function(num){
+Packer.prototype.pack_int16 = function(num){
   this.bufferBuilder.append((num & 0xff00) >> 8);
   this.bufferBuilder.append(num & 0xff);
 }
 
-BinaryPack.Packer.prototype.pack_int32 = function(num){
+Packer.prototype.pack_int32 = function(num){
   this.bufferBuilder.append((num >>> 24) & 0xff);
   this.bufferBuilder.append((num & 0x00ff0000) >>> 16);
   this.bufferBuilder.append((num & 0x0000ff00) >>> 8);
   this.bufferBuilder.append((num & 0x000000ff));
 }
 
-BinaryPack.Packer.prototype.pack_int64 = function(num){
+Packer.prototype.pack_int64 = function(num){
   var high = Math.floor(num / Math.pow(2, 32));
   var low  = num % Math.pow(2, 32);
   this.bufferBuilder.append((high & 0xff000000) >>> 24);
@@ -546,3 +547,5 @@ BinaryPack.Packer.prototype.pack_int64 = function(num){
   this.bufferBuilder.append((low  & 0x0000ff00) >>>  8);
   this.bufferBuilder.append((low  & 0x000000ff));
 }
+
+})(this);
