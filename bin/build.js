@@ -39,6 +39,7 @@ var starttagIF = '// if node'
 var base = [
     '../deps/EventEmitter.js'
   , 'util.js'
+  , 'client/stream.js'
   , 'stream.js'
   , 'client.js'
 ];
