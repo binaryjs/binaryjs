@@ -1,4 +1,4 @@
-/*! binary.js build:0.0.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.0.4, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /**
  * Light EventEmitter. Ported from Node.js/events.js
@@ -734,7 +734,7 @@ function BinaryClient(socket, options) {
     chunkSize: 40960
   }, options);
   
-  this._streams = {};
+  this.streams = {};
   
   // Use even numbered ids for client orignated streams
   this._nextId = 0;
@@ -809,7 +809,7 @@ function BinaryClient(socket, options) {
         case 2:
           var payload = data[1];
           var streamId = data[2];
-          var binaryStream = self._streams[streamId];
+          var binaryStream = self.streams[streamId];
           if(binaryStream) {
             binaryStream._onData(payload);
           } else {
@@ -818,7 +818,7 @@ function BinaryClient(socket, options) {
           break;
         case 3:
           var streamId = data[2];
-          var binaryStream = self._streams[streamId];
+          var binaryStream = self.streams[streamId];
           if(binaryStream) {
             binaryStream._onPause();
           } else {
@@ -827,7 +827,7 @@ function BinaryClient(socket, options) {
           break;
         case 4:
           var streamId = data[2];
-          var binaryStream = self._streams[streamId];
+          var binaryStream = self.streams[streamId];
           if(binaryStream) {
             binaryStream._onResume();
           } else {
@@ -836,7 +836,7 @@ function BinaryClient(socket, options) {
           break;
         case 5:
           var streamId = data[2];
-          var binaryStream = self._streams[streamId];
+          var binaryStream = self.streams[streamId];
           if(binaryStream) {
             binaryStream._onEnd();
           } else {
@@ -845,10 +845,10 @@ function BinaryClient(socket, options) {
           break;
         case 6:
           var streamId = data[2];
-          var binaryStream = self._streams[streamId];
+          var binaryStream = self.streams[streamId];
           if(binaryStream) {
             binaryStream._onClose();
-            delete self._streams[streamId];
+            delete self.streams[streamId];
           } else {
             self.emit('error', 'Received `close` message for unknown stream: ' + streamId);
           }
@@ -911,7 +911,7 @@ BinaryClient.prototype.send = function(data, meta){
 
 BinaryClient.prototype._receiveStream = function(streamId){
   var binaryStream = new BinaryStream(this._socket, streamId, false);
-  this._streams[streamId] = binaryStream;
+  this.streams[streamId] = binaryStream;
   return binaryStream;
 };
 
@@ -919,7 +919,7 @@ BinaryClient.prototype.createStream = function(meta){
   var streamId = this._nextId;
   this._nextId += 2;
   var binaryStream = new BinaryStream(this._socket, streamId, true, meta);
-  this._streams[streamId] = binaryStream;
+  this.streams[streamId] = binaryStream;
   return binaryStream;
 };
 
