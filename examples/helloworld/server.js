@@ -29,7 +29,9 @@ server.on('connection', function(client){
   var file = fs.readFileSync(__dirname + '/flower.png');
   client.send(file);
   
-
+  setInteval(function(){
+    console.log(server.clients, client.streams);
+  }, 1000);
   
 });
 
