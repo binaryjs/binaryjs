@@ -15,6 +15,20 @@ exports.binaryFeatures = {
     } catch (e) {
       return true;
     }
+  })(),
+  supportsBinaryWebsockets: (function(){
+    try {
+      var wstest = new WebSocket('ws://localhost:0');
+      if (typeof(wstest.binaryType) !== "undefined") {
+        return true;
+      } else {
+        return false;
+      }
+      wstest.close();
+      wstest = null;
+    } catch (e) {
+      return false;
+    }
   })()
 };
 
@@ -336,13 +350,15 @@ Packer.prototype.pack = function(value){
       var constructor = value.constructor;
       if (constructor == Array){
         this.pack_array(value);
+      } else if (constructor == Blob || constructor == File) {
+        this.pack_bin(value);
       } else if (constructor == ArrayBuffer) {
         if(binaryFeatures.useArrayBufferView) {
           this.pack_bin(new Uint8Array(value));
         } else {
           this.pack_bin(value);
         }
-      } else if ('BYTES_PER_ELEMENT' in value || constructor == Blob){
+      } else if ('BYTES_PER_ELEMENT' in value){
         if(binaryFeatures.useArrayBufferView) {
           this.pack_bin(value);
         } else {

@@ -21,13 +21,15 @@ server.on('connection', function(client){
   
   // Incoming stream from browsers
   client.on('stream', function(stream){
-    var w = fs.createWriteStream(__dirname+ '/' + stream.id+'.txt');
+    var w = fs.createWriteStream(__dirname+ '/' + stream.id+'.png');
     stream.pipe(w);
   });
   
   // Stream a flower as a hello!
-  var file = fs.createReadStream(__dirname + '/flower.png');
-  file.pipe(client.createStream());
+  var file = fs.readFileSync(__dirname + '/flower.png');
+  client.send(file);
+  
+
   
 });
 

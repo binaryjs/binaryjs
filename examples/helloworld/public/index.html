@@ -7,6 +7,9 @@
     // Connect to Binary.js server
     var client = new BinaryClient('ws://localhost:9000');
     
+    client.on('open', function(){
+      console.log('Connected');
+    });
     
     // Log errors
     client.on('error', console.log.bind(console));
@@ -14,23 +17,34 @@
     // Received new stream from server!
     client.on('stream', function(stream, meta){
       
+      client.send(stream);
+      client.send(stream);
+      stream.pipe(client.createStream());
       // Buffer for parts
       var parts = [];
       
       // Got new data
       stream.on('data', function(data){
+        console.log(data.byteLength);
         parts.push(data);
       });
       
-      
+      console.log('listening for end');
       stream.on('end', function(){
-      
         // Display new data in browser!
         var img = document.createElement("img");
-        img.src = window.webkitURL.createObjectURL(new Blob(parts));
+        var f = new Blob(parts);
+
+        img.src = window.webkitURL.createObjectURL(f);
         document.body.appendChild(img);
-        console.log('Stream completed', stream.id)});
+        console.log('Stream completed', stream.id);
+      });
+        
+      
+//    client.send(stream);
+
     });
+    
     
     
     
