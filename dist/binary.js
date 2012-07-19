@@ -1,4 +1,4 @@
-/*! binary.js build:0.0.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.0.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /**
  * Light EventEmitter. Ported from Node.js/events.js
@@ -709,9 +709,7 @@ BinaryStream.prototype._onEnd = function() {
 
 BinaryStream.prototype._onData = function(data) {
   // Dispatch 
-  if(this.readable) {
-    this.emit('data', data);
-  }
+  this.emit('data', data);
 };
 
 BinaryStream.prototype.pause = function() {
@@ -875,9 +873,9 @@ BinaryClient.prototype.send = function(data, meta){
       stream.write(data);
     } 
   } else if (util.isNode !== true) {
-    if(data.constructor == window.Blob) {
+    if(data.constructor == Blob || data.constructor == File) {
       (new BlobReadStream(data, {chunkSize: this._options.chunkSize})).pipe(stream);
-    } else if (data.constructor == window.ArrayBuffer) {
+    } else if (data.constructor == ArrayBuffer) {
       var blob;
       if(binaryFeatures.useArrayBufferView) {
         data = new Uint8Array(data.buffer);
@@ -908,6 +906,7 @@ BinaryClient.prototype.send = function(data, meta){
       stream.write(data);
     }
   }
+  return stream;
 };
 
 BinaryClient.prototype._receiveStream = function(streamId){
