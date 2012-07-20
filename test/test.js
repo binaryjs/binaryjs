@@ -4,7 +4,7 @@ var BinaryServer = binaryjs.BinaryServer;
 var BinaryClient = binaryjs.BinaryClient;
 var http = require('http');
 
-var server, serverUrl = 'ws://localhost:9101';
+var server, client, serverUrl = 'ws://localhost:9101';
 
 describe('BinaryServer', function(){
   describe('creating servers', function(){
@@ -93,7 +93,6 @@ describe('BinaryClient', function(){
       });  
     });
   });
-  
   describe('.streams', function(){
     it('should contain a list of streams', function(done){
       server.on('connection', function(client){
@@ -120,5 +119,36 @@ describe('BinaryClient', function(){
         client.createStream();
       });
     });
+    it('should delete streams upon close event', function(done){
+      server.on('connection', function(client){
+        client.on('stream', function(stream){
+          stream.on('close', function(){
+            assert(!(stream.id in client.streams));
+            done(); 
+          });
+        });
+        var stream = client.createStream();
+        stream.on('close', function(){
+          assert(!(stream.id in client.streams));
+        });
+        stream.destroy();
+      });
+      var client = new BinaryClient(serverUrl);
+      client.on('open', function(){
+        var stream = client.createStream();
+        stream.destroy();
+      });
+    });
+  });
+});
+
+describe('BinaryStream', function(){
+  beforeEach(function(){
+    server = new BinaryServer({port: 9101});
+  });
+  afterEach(function(){
+    server.close();
+  });
+  describe('events for clients', function(){
   });
 });
