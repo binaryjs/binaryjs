@@ -9,6 +9,9 @@
     "url": "git://github.com/binaryjs/binaryjs.git"
   },
   "main": "lib/server.js",
+  "scripts": {
+    "test": "make test"
+  },
   "engines": {
     "node": ">=0.6.0"
   },
@@ -16,5 +19,8 @@
     "streamws" : ">=0.0.0",
     "binarypack": ">=0.0.0",
     "streamers": ">=0.1.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.3.0"
   }
 }
