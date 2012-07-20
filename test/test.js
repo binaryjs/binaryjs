@@ -1,5 +1,5 @@
 var assert = require('assert');
-var binaryjs = require('binaryjs');
+var binaryjs = require('../');
 var BinaryServer = binaryjs.BinaryServer;
 var BinaryClient = binaryjs.BinaryClient;
 var http = require('http');
