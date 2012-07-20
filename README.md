@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](http://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME])
+[![Build Status](https://secure.travis-ci.org/binaryjs/binaryjs.png)](http://travis-ci.org/binaryjs/binaryjs)
 
 BinaryJS
 ========
