@@ -6,43 +6,6 @@ var http = require('http');
 
 var server, client, serverUrl = 'ws://localhost:9101';
 
-describe('BinaryServer', function(){
-  describe('creating servers', function(){
-    it('should allow creating servers with a port', function(){
-      server = new BinaryServer({port: 9101});
-    });
-    it('should allow creating servers with an http server', function(){
-      new BinaryServer({port: 9102});
-    });
-  });
-  describe('.clients', function(){
-    it('should contain a list of clients', function(done){
-      var i = 0;
-      var startLength = Object.keys(server.clients).length;
-      server.on('connection', function(client){
-        assert.equal(server.clients[client.id], client);
-        if(++i == 3) {
-          var endLength = Object.keys(server.clients).length;
-          assert.equal(endLength - startLength, i);
-          done();
-        }
-      });
-      new BinaryClient(serverUrl);
-      new BinaryClient(serverUrl);
-      new BinaryClient(serverUrl);
-    });
-  });
-  describe('.close()', function(){
-    it('should prevent future clients connecting', function(done){
-      server.close();
-      var client = new BinaryClient(serverUrl);
-      client.on('error', function(){
-        done();
-      });
-    });
-  });
-});
-
 describe('BinaryClient', function(){
   beforeEach(function(){
     server = new BinaryServer({port: 9101});
@@ -120,11 +83,12 @@ describe('BinaryClient', function(){
       });
     });
     it('should delete streams upon close event', function(done){
+      var closed = 0;
       server.on('connection', function(client){
         client.on('stream', function(stream){
           stream.on('close', function(){
             assert(!(stream.id in client.streams));
-            done(); 
+            done();
           });
         });
         var stream = client.createStream();
@@ -142,13 +106,3 @@ describe('BinaryClient', function(){
   });
 });
 
-describe('BinaryStream', function(){
-  beforeEach(function(){
-    server = new BinaryServer({port: 9101});
-  });
-  afterEach(function(){
-    server.close();
-  });
-  describe('events for clients', function(){
-  });
-});
