@@ -96,6 +96,7 @@ Now to finish up, inside that callback we need to do several things:
 * Add to array on the stream `data` event
 * Create an `<img>` element and then set the src of it to the data we received on the `end` event
 
+```js
 client.on('stream', function(stream, meta){    
   	var parts = [];
 	stream.on('data', function(data){
@@ -107,6 +108,7 @@ client.on('stream', function(stream, meta){
 	  document.body.appendChild(img);
 	});
 });
+```
 
 ## Running the example
 Run the server, and open index.html in your favorite binary socket compatible browser, and you'll see a lovely flower!
