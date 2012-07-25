@@ -1,0 +1,26 @@
+<html>
+<head>
+  <script src="http://cdn.binaryjs.com/0/binary.js"></script>
+  <script>
+    // Connect to Binary.js server
+    var client = new BinaryClient('ws://localhost:9000');
+    // Received new stream from server!
+    client.on('stream', function(stream, meta){    
+      // Buffer for parts
+      var parts = [];
+      // Got new data
+      stream.on('data', function(data){
+        parts.push(data);
+      });
+      stream.on('end', function(){
+        // Display new data in browser!
+        var img = document.createElement("img");
+        img.src =(webkitURL||URL).createObjectURL(new Blob(parts));
+        document.body.appendChild(img);
+      });
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>
