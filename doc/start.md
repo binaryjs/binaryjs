@@ -55,7 +55,7 @@ server.on('connection', function(client){
 });
 ```
 
-Note that instead of `client.send` we could've done this:
+Note that instead of `client.send(file)` we could've done this:
 
 ```js
 var stream = client.createStream();
