@@ -62,7 +62,7 @@ var stream = client.createStream();
 file.pipe(stream);
 ```
 
-`client.send` is a helper function for doing just that when it takes a stream parameters, note that behavior is different for other parameter types. [See API reference](https://github.com/binaryjs/binaryjs/blob/master/doc/api.md).
+`client.send` is a helper function for doing just that when it takes a stream parameter, note that behavior is different for other parameter types. [See API reference](https://github.com/binaryjs/binaryjs/blob/master/doc/api.md#clientsenddata-meta).
 
 That's it for the server!
 

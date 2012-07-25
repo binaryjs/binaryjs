@@ -70,6 +70,8 @@ Creates a new readable and writable `binaryjs.BinaryStream` object with the give
 
 If `data` is a Node.js `Buffer` or browser `ArrayBuffer`, `ArrayBufferView`, `Blob`, or `File`, the data will be chunked according to `options.chunkSize` and streamed through the new `BinaryStream`.
 
+If `data` is a Node.js stream (including `BinaryStream` objects), it will be piped into a new `BinaryStream`
+
 If `data` is any other type, it will be sent through the stream in one chunk.
 
 ### client.close()
