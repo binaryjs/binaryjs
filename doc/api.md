@@ -1,4 +1,4 @@
-# BinaryJS
+# BinaryJS API Reference
 
 ## Class: binaryjs.BinaryServer `Node.js only`
 
