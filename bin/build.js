@@ -37,7 +37,8 @@ var starttagIF = '// if node'
  */
 
 var base = [
-    '../deps/EventEmitter.js'
+    '../deps/binarypack.js'
+  , '../deps/EventEmitter.js'
   , 'util.js'
   , 'client/stream.js'
   , 'client/blob_stream.js'

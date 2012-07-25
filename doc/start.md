@@ -1,11 +1,13 @@
 # Getting Started with BinaryJS
 
+In this guide we'll download, install, and then build the [helloworld](https://github.com/binaryjs/binaryjs/tree/master/examples/helloworld) example.
+
 ## Download
 
 1. Install the BinaryJS server
 
 ```console
-npm install binaryjs
+$ npm install binaryjs
 ```
 or from Git
 ```console
@@ -21,6 +23,7 @@ $ npm install -g
 ```
 
 ## Create the server
+
 
 
 ## Create the client
