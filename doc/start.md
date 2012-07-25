@@ -118,4 +118,6 @@ BinaryJS is extremely flexible. You aren't limited to sending only binary data. 
 
 You aren't limited to piping streams around either. You can create as many streams as you want for each client, and send data bidirectionally, whether its a large buffer at once, chunked, or just strings and numbers and arrays and hashes.
 
-[Checkout the API reference](https://github.com/binaryjs/binaryjs/blob/master/doc/api.md).
+[Check out the API reference](https://github.com/binaryjs/binaryjs/blob/master/doc/api.md)
+
+[Ask questions on the mailing list](http://groups.google.com/group/binaryjs-group)
