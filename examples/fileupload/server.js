@@ -1,12 +1,14 @@
 var fs = require('fs');
 // Serve client side statically
 var express = require('express');
-var app = express.createServer().listen(9000);
+var app = express.createServer();
 app.use(express.static(__dirname + '/public'));
 
 // Start Binary.js server
 var BinaryServer = require('binaryjs').BinaryServer;
-var server = BinaryServer({port: 9001});
+var server = BinaryServer({server: app});
+
+app.listen(9000);
 
 //
 //
@@ -15,7 +17,7 @@ server.on('connection', function(client){
   // Incoming stream from browsers
   client.on('stream', function(stream, meta){
     //
-    var file = fs.createWriteStream(__dirname+ '/' + meta.name);
+    var file = fs.createWriteStream(__dirname+ '/public/' + meta.name);
     stream.pipe(file);
     //
     // Send progress back
@@ -28,5 +30,4 @@ server.on('connection', function(client){
 //
 //
 
-console.log('HTTP server started on port 9000');
-console.log('BinaryJS server started on port 9001');
+console.log('HTTP and BinaryJS server started on port 9000');

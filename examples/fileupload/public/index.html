@@ -1,17 +1,17 @@
 <html>
 <head>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
-  <script src="binarypack.js"></script>
-  <script src="binary.js"></script>
+  <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script>
-    var client = new BinaryClient('ws://localhost:9001');
+    var client = new BinaryClient('ws://localhost:9000');
     client.on('open', function(){
-      document.body.addEventListener("drop", function(e){    
-        e.preventDefault();
-        var file = e.dataTransfer.files[0];
-       
-       
-        //
+      $('#box').bind('drop', function(e){    
+        e.originalEvent.preventDefault();
+        var file = e.originalEvent.dataTransfer.files[0];
+        
+        // Add to list of uploaded files
+        $('<div align="center"></div>').append($('<a></a>').text(file.name).prop('href', '/'+file.name)).appendTo('body');
+        
         // `client.send` is a helper function that creates a stream with the 
         // given metadata, and then chunks up and streams the data.
         var stream = client.send(file, {name: file.name, size: file.size});
@@ -21,19 +21,13 @@
         stream.on('data', function(data){
           $('#progress').text(Math.round(tx+=data.rx*100) + '% complete');
         });
-        //
-        //
-        
-        
-      }, false);  
+      });  
     });
  </script>
- 
- 
 </head>
 <body>
 <div id="progress" align="center">0% complete</div>
-<div style="background: #eee; font-size: 26px; width: 400px; height: 300px;line-height: 300px; margin: 0 auto; text-align: center;">
+<div id="box" style="background: #eee; font-size: 26px; width: 400px; height: 300px;line-height: 300px; margin: 0 auto; text-align: center;">
   Drag files here
 </div>
 </body>

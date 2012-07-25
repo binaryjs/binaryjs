@@ -1,4 +1,4 @@
-## Drag and Drop File Upload Example w/ Percent complete 
+## Drag and Drop File Upload Example w/ Percentage completion
 
 
 1. Run the server:
