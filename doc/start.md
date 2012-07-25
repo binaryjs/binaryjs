@@ -104,7 +104,7 @@ client.on('stream', function(stream, meta){
 	});
 	stream.on('end', function(){
 	  var img = document.createElement("img");
-	  img.src =(webkitURL||URL).createObjectURL(new Blob(parts));
+	  img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
 	  document.body.appendChild(img);
 	});
 });

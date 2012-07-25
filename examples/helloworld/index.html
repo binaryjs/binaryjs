@@ -15,7 +15,7 @@
       stream.on('end', function(){
         // Display new data in browser!
         var img = document.createElement("img");
-        img.src =(webkitURL||URL).createObjectURL(new Blob(parts));
+        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
         document.body.appendChild(img);
       });
     });
