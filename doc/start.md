@@ -95,6 +95,7 @@ Now to finish up, inside that callback we need to do several things:
 * Create an array to hold the parts of the image
 * Add to array on the stream `data` event
 * Create an `<img>` element and then set the src of it to the data we received on the `end` event
+
 client.on('stream', function(stream, meta){    
   	var parts = [];
 	stream.on('data', function(data){
