@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.0, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.1, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /*! binarypack.js build:0.0.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
@@ -1362,9 +1362,8 @@ function BinaryClient(socket, options) {
       // [ 6  , null , streamId ]
       // 
       
-      if(util.isNode !== true){
-        data = data.data;
-      }
+      data = data.data;
+      
       
       data = util.unpack(data);
       switch(data[0]) {
