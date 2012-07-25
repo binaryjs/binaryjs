@@ -9,3 +9,24 @@ For docs and more info
 http://binaryjs.com
 
 Node binary websocket streaming made easy
+
+
+## Download
+
+Server
+
+```console
+$ npm install binaryjs
+```
+or from Git
+```console
+$ git://github.com/binaryjs/binaryjs.git
+$ cd binaryjs 
+$ npm install -g
+```
+
+Client
+
+```html
+<script src="http://cdn.binaryjs.com/0/binary.js"></script>
+```
