@@ -30,3 +30,5 @@ Client
 ```html
 <script src="http://cdn.binaryjs.com/0/binary.js"></script>
 ```
+
+### http://binaryjs.com for docs and demos
