@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.1, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /*! binarypack.js build:0.0.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
@@ -749,7 +749,6 @@ var util = {
     }
     return dest;
   },
-  info: console.log.bind(console),
   pack: BinaryPack.pack,
   unpack: BinaryPack.unpack,
   setZeroTimeout: (function(global) {
