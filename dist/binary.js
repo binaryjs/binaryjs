@@ -1,6 +1,6 @@
 /*! binary.js build:0.1.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
-/*! binarypack.js build:0.0.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binarypack.js build:0.0.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 exports.binaryFeatures = {
   useBlobBuilder: (function(){
@@ -20,7 +20,8 @@ exports.binaryFeatures = {
   })(),
   supportsBinaryWebsockets: (function(){
     try {
-      var wstest = new WebSocket('ws://localhost:0');
+      var wstest = new WebSocket('ws://null');
+      wstest.onerror = function(){};
       if (typeof(wstest.binaryType) !== "undefined") {
         return true;
       } else {
