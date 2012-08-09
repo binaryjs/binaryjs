@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.2, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 /*! binarypack.js build:0.0.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
@@ -1447,7 +1447,7 @@ BinaryClient.prototype.send = function(data, meta){
     } else if (data.constructor == ArrayBuffer) {
       var blob;
       if(binaryFeatures.useArrayBufferView) {
-        data = new Uint8Array(data.buffer);
+        data = new Uint8Array(data);
       }
       if(binaryFeatures.useBlobBuilder) {
         var builder = new BlobBuilder();
