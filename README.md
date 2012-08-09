@@ -20,7 +20,7 @@ $ npm install binaryjs
 ```
 or from Git
 ```console
-$ git://github.com/binaryjs/binaryjs.git
+$ git clone git://github.com/binaryjs/binaryjs.git
 $ cd binaryjs 
 $ npm install -g
 ```
