@@ -2,38 +2,41 @@
 (function(exports){
 /*! binarypack.js build:0.0.3, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
-exports.binaryFeatures = {
-  useBlobBuilder: (function(){
-    try {
-      new Blob([]);
+exports.binaryFeatures = {};
+exports.binaryFeatures.useBlobBuilder = (function(){
+  try {
+    new Blob([]);
+    return false;
+  } catch (e) {
+    return true;
+  }
+})();
+exports.binaryFeatures.useArrayBufferView = (function(){
+  try {
+    if (exports.binaryFeatures.useBlobBuilder) {
       return false;
-    } catch (e) {
-      return true;
-    }
-  })(),
-  useArrayBufferView: (function(){
-    try {
+    } else {
       return (new Blob([new Uint8Array([])])).size === 0;
-    } catch (e) {
-      return true;
     }
-  })(),
-  supportsBinaryWebsockets: (function(){
-    try {
-      var wstest = new WebSocket('ws://null');
-      wstest.onerror = function(){};
-      if (typeof(wstest.binaryType) !== "undefined") {
-        return true;
-      } else {
-        return false;
-      }
-      wstest.close();
-      wstest = null;
-    } catch (e) {
+  } catch (e) {
+    return true;
+  }
+})();
+exports.binaryFeatures.supportsBinaryWebsockets = (function(){
+  try {
+    var wstest = new WebSocket('ws://null');
+    wstest.onerror = function(){};
+    if (typeof(wstest.binaryType) !== "undefined") {
+      return true;
+    } else {
       return false;
     }
-  })()
-};
+    wstest.close();
+    wstest = null;
+  } catch (e) {
+    return false;
+  }
+})();
 
 exports.BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
 
