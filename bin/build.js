@@ -12,7 +12,8 @@ var fs = require('fs')
  * @api private
  */
 
-var template = '/*! binary.%ext% build:' + package.version + ', %type%. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */\n(function(exports){\n'
+var template = '/*! binary.%ext% build:' + package.version + ', %type%. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */'
+  , prefix = '\n(function(exports){\n'
   , development = template.replace('%type%', 'development').replace('%ext%', 'js')
   , production = template.replace('%type%', 'production').replace('%ext%', 'min.js')
   , suffix = '\n})(this);\n';
@@ -37,8 +38,9 @@ var starttagIF = '// if node'
  */
 
 var base = [
-    '../deps/binarypack.js'
-  , '../deps/EventEmitter.js'
+    '../deps/js-binarypack/lib/bufferbuilder.js'
+  , '../deps/js-binarypack/lib/binarypack.js'
+  , '../deps/EventEmitter/EventEmitter.js'
   , 'util.js'
   , 'client/stream.js'
   , 'client/blob_stream.js'
@@ -114,6 +116,8 @@ var builder = module.exports = function () {
       var code = development
         , ignore = 0;
 
+      code += prefix;
+      
       files.forEach(function (file) {
         code += results[file];
       });

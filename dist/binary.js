@@ -1,7 +1,5 @@
 /*! binary.js build:0.1.4, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
-/*! binarypack.js build:0.0.4, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
-(function(exports){
 var binaryFeatures = {};
 binaryFeatures.useBlobBuilder = (function(){
   try {
@@ -567,8 +565,6 @@ Packer.prototype.pack_int64 = function(num){
   this.bufferBuilder.append((low  & 0x0000ff00) >>>  8);
   this.bufferBuilder.append((low  & 0x000000ff));
 }
-
-})(this);
 /**
  * Light EventEmitter. Ported from Node.js/events.js
  * Eric Zhang
