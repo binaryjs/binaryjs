@@ -1,19 +1,19 @@
 var fs = require('fs');
+var http = require('http');
+
 // Serve client side statically
 var express = require('express');
-var app = express.createServer();
+var app = express();
 app.use(express.static(__dirname + '/public'));
 
+var server = http.createServer(app);
+
 // Start Binary.js server
-var BinaryServer = require('binaryjs').BinaryServer;
-var server = BinaryServer({server: app});
+var BinaryServer = require('../../').BinaryServer;
+var bs = BinaryServer({server: server});
 
-app.listen(9000);
-
-//
-//
 // Wait for new user connections
-server.on('connection', function(client){
+bs.on('connection', function(client){
   // Incoming stream from browsers
   client.on('stream', function(stream, meta){
     //
@@ -30,4 +30,5 @@ server.on('connection', function(client){
 //
 //
 
+server.listen(9000);
 console.log('HTTP and BinaryJS server started on port 9000');
