@@ -3,7 +3,7 @@
 BinaryJS
 ========
 
-We're under heavy development! 
+We're under development! 
 
 For docs and more info
 http://binaryjs.com
