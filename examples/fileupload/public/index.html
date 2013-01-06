@@ -1,11 +1,17 @@
 <html>
 <head>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script> 
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script>
     var client = new BinaryClient('ws://localhost:9000');
+    
+    // Wait for connection to BinaryJS server
     client.on('open', function(){
-      $('#box').bind('drop', function(e){    
+      var box = $('#box');
+      box.on('dragenter', doNothing);
+      box.on('dragover', doNothing);
+      box.text('Drag files here');
+      box.on('drop', function(e){
         e.originalEvent.preventDefault();
         var file = e.originalEvent.dataTransfer.files[0];
         
@@ -21,14 +27,20 @@
         stream.on('data', function(data){
           $('#progress').text(Math.round(tx+=data.rx*100) + '% complete');
         });
-      });  
+      }); 
     });
+    
+    // Deal with DOM quirks
+    function doNothing (e){
+      e.preventDefault();
+      e.stopPropagation();
+    }
  </script>
 </head>
 <body>
 <div id="progress" align="center">0% complete</div>
 <div id="box" style="background: #eee; font-size: 26px; width: 400px; height: 300px;line-height: 300px; margin: 0 auto; text-align: center;">
-  Drag files here
+  Connecting...
 </div>
 </body>
 </html>
