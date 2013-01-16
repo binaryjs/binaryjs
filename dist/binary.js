@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.4, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.5, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 var binaryFeatures = {};
 binaryFeatures.useBlobBuilder = (function(){
@@ -1187,16 +1187,7 @@ function BinaryStream(socket, id, create, meta) {
   
   this.id = id;
   this._socket = socket;
-  this._socket.addEventListener('error', function(error){
-    self.readable = false;
-    self.writable = false;
-    self.emit('error', error);
-  });
-  this._socket.addEventListener('close', function(code, message){
-    self._onClose();
-  });
-  
-  
+    
   this.writable = true;
   this.readable = true;
   this.paused = false;
@@ -1213,6 +1204,12 @@ function BinaryStream(socket, id, create, meta) {
 util.inherits(BinaryStream, Stream);
 
 
+BinaryStream.prototype._onDrain = function() {
+  if(!this.paused) {
+    this.emit('drain');
+  }
+};
+
 BinaryStream.prototype._onClose = function() {
   // Emit close event
   if (this._closed) {
@@ -1222,6 +1219,12 @@ BinaryStream.prototype._onClose = function() {
   this.writable = false;
   this._closed = true;
   this.emit('close');
+};
+
+BinaryStream.prototype._onError = function(error){
+  this.readable = false;
+  this.writable = false;
+  this.emit('error', error);
 };
 
 // Write stream
@@ -1239,14 +1242,14 @@ BinaryStream.prototype._onResume = function() {
   this.emit('drain');
 };
 
-BinaryStream.prototype._write = function(code, data, bonus, cb) {
+BinaryStream.prototype._write = function(code, data, bonus) {
   var message = util.pack([code, data, bonus]);
-  return this._socket.send(message, {binary: true}, cb) !== false;
+  return this._socket.send(message) !== false;
 };
 
-BinaryStream.prototype.write = function(data, cb) {
+BinaryStream.prototype.write = function(data) {
   if(this.writable) {
-    var out = this._write(2, data, this.id, cb);
+    var out = this._write(2, data, this.id);
     return !this.paused && out;
   } else {
     throw new Error('Stream is not writable');
@@ -1320,9 +1323,17 @@ function BinaryClient(socket, options) {
     self.emit('open');
   });
   this._socket.addEventListener('error', function(error){
+    var ids = Object.keys(self.streams);
+    for (var i = 0, ii = ids.length; i < ii; i++) {
+      self.streams[ids[i]]._onError(error);
+    }
     self.emit('error', error);
   });
   this._socket.addEventListener('close', function(code, message){
+    var ids = Object.keys(self.streams);
+    for (var i = 0, ii = ids.length; i < ii; i++) {
+      self.streams[ids[i]]._onClose();
+    }
     self.emit('close', code, message);
   });
   this._socket.addEventListener('message', function(data, flags){
@@ -1361,8 +1372,20 @@ function BinaryClient(socket, options) {
       
       data = data.data;
       
-      
-      data = util.unpack(data);
+      try {
+          data = util.unpack(data);
+      } catch (ex) {
+          return self.emit('error', new Error('Received unparsable message: ' + ex));
+      }
+      if (!(data instanceof Array))
+          return self.emit('error', new Error('Received non-array message'));
+      if (data.length != 3)
+          return self.emit('error', new Error('Received message with wrong part count: ' + data.length));
+      if ('number' != typeof data[0])
+          return self.emit('error', new Error('Received message with non-number type: ' + data[0]));
+      if ('number' != typeof data[2])
+          return self.emit('error', new Error('Received message with non-number streamId: ' + data[2]));
+
       switch(data[0]) {
         case 0:
           // Reserved
@@ -1380,7 +1403,7 @@ function BinaryClient(socket, options) {
           if(binaryStream) {
             binaryStream._onData(payload);
           } else {
-            self.emit('error', 'Received `data` message for unknown stream: ' + streamId);
+            self.emit('error', new Error('Received `data` message for unknown stream: ' + streamId));
           }
           break;
         case 3:
@@ -1389,7 +1412,7 @@ function BinaryClient(socket, options) {
           if(binaryStream) {
             binaryStream._onPause();
           } else {
-            self.emit('error', 'Received `pause` message for unknown stream: ' + streamId);
+            self.emit('error', new Error('Received `pause` message for unknown stream: ' + streamId));
           }
           break;
         case 4:
@@ -1398,7 +1421,7 @@ function BinaryClient(socket, options) {
           if(binaryStream) {
             binaryStream._onResume();
           } else {
-            self.emit('error', 'Received `resume` message for unknown stream: ' + streamId);
+            self.emit('error', new Error('Received `resume` message for unknown stream: ' + streamId));
           }
           break;
         case 5:
@@ -1407,7 +1430,7 @@ function BinaryClient(socket, options) {
           if(binaryStream) {
             binaryStream._onEnd();
           } else {
-            self.emit('error', 'Received `end` message for unknown stream: ' + streamId);
+            self.emit('error', new Error('Received `end` message for unknown stream: ' + streamId));
           }
           break;
         case 6:
@@ -1416,11 +1439,11 @@ function BinaryClient(socket, options) {
           if(binaryStream) {
             binaryStream._onClose();
           } else {
-            self.emit('error', 'Received `close` message for unknown stream: ' + streamId);
+            self.emit('error', new Error('Received `close` message for unknown stream: ' + streamId));
           }
           break;
         default:
-          self.emit('error', 'Unrecognized message type received: ' + data[0]);
+          self.emit('error', new Error('Unrecognized message type received: ' + data[0]));
       }
     });
   });
@@ -1504,7 +1527,6 @@ BinaryClient.prototype.createStream = function(meta){
 BinaryClient.prototype.close = BinaryClient.prototype.destroy = function(code, message) {
   this._socket.close(code, message);
 };
-
 
 exports.BinaryClient = BinaryClient;
 
