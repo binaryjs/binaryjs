@@ -32,3 +32,10 @@ Client
 ```
 
 ### http://binaryjs.com for docs and demos
+
+
+## Changelog
+
+0.1.5
+
+- 
