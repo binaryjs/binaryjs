@@ -36,6 +36,9 @@ Client
 
 ## Changelog
 
+0.1.6
+Fix critical bug involving drain event not firing. Bump `streamws` to 0.1.1
+
 0.1.5
 
 - `streamws` version `>=0.1.0` is now required
