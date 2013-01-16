@@ -148,7 +148,7 @@ Resume the stream.
 Sends an end message, triggering the `end` event and marks `stream.readable` false but does not close the socket.
 
 
-### stream.write(data, [callback])
+### stream.write(data)
 
 Returns `true` if data is written immediately or `false` if data is buffered in socket.
 
