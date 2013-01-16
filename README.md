@@ -38,4 +38,6 @@ Client
 
 0.1.5
 
-- 
+- `streamws` version `>=0.1.0` is now required
+- Streams no longer add their own listeners to error/close/drain events (fixes leaks)
+- Calls to `socket.send` no longer include `{binary: true}` or callback parameters (fixes type error in some browsers)
