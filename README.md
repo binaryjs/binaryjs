@@ -36,8 +36,15 @@ Client
 
 ## Changelog
 
+0.1.8
+
+- Does not throw exceptions when writing on a stream with closed underlying socket
+- StreamID no longer has to be a number
+- Use newer version of node-binarypack
+
 0.1.7
-Fix critical bug involving drain event not firing. Bump `streamws` to 0.1.1
+
+- Fix critical bug involving drain event not firing. Bump `streamws` to 0.1.1
 
 0.1.5
 
