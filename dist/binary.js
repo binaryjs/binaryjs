@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.7, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.8, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 var binaryFeatures = {};
 binaryFeatures.useBlobBuilder = (function(){
@@ -1243,6 +1243,9 @@ BinaryStream.prototype._onResume = function() {
 };
 
 BinaryStream.prototype._write = function(code, data, bonus) {
+  if (this._socket.readyState !== this._socket.constructor.OPEN) {
+    return false;
+  }
   var message = util.pack([code, data, bonus]);
   return this._socket.send(message) !== false;
 };
@@ -1296,7 +1299,7 @@ BinaryStream.prototype.resume = function() {
 
 
 function BinaryClient(socket, options) {
-  if (!(this instanceof BinaryClient)) return new BinaryClient(options);
+  if (!(this instanceof BinaryClient)) return new BinaryClient(socket, options);
   
   EventEmitter.call(this);
   
@@ -1383,9 +1386,7 @@ function BinaryClient(socket, options) {
           return self.emit('error', new Error('Received message with wrong part count: ' + data.length));
       if ('number' != typeof data[0])
           return self.emit('error', new Error('Received message with non-number type: ' + data[0]));
-      if ('number' != typeof data[2])
-          return self.emit('error', new Error('Received message with non-number streamId: ' + data[2]));
-
+      
       switch(data[0]) {
         case 0:
           // Reserved
