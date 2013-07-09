@@ -9,8 +9,8 @@ This class is a the BinaryJS websocket server. It is an `EventEmitter`.
 * `options` Object
   * `host` String. Default `0.0.0.0`
   * `port` Number
-  * `server` String. Use an existing `http.Server` or `ws.Server` instead of creating a new one.
-  * `path` 
+  * `server` Object. Use an existing `http.Server` or `ws.Server` instead of creating a new one.
+  * `path` String. The path on which to accept WebSocket connections
   * `chunkSize` Number. Passed into constructor of connecting `BinaryClient`. Default `40960`
 
 Construct a new server object.
