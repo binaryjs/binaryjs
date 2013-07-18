@@ -111,7 +111,7 @@ client.on('stream', function(stream, meta){
 ```
 
 ## Integrating with an existing node app
-BinaryServer can listen on an existing [http.Server](http://nodejs.org/api/http.html#http_class_http_server) by specifying the `server` parameter in the options.
+BinaryServer can listen on an existing [http.Server](http://nodejs.org/api/http.html#http_class_http_server) by specifying the `server` parameter in the options. See [fileupload](https://github.com/binaryjs/binaryjs/tree/master/examples/fileupload) example of this.
 
 ```js
 var http = require('http');
