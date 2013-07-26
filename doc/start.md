@@ -118,7 +118,7 @@ var http = require('http');
 var server = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end('Hello World\n');
-}).listen(1337, '127.0.0.1');
+}).listen(9000, '127.0.0.1');
 
 var BinaryServer = require('binaryjs').BinaryServer,
     fs = require('fs');
@@ -135,19 +135,19 @@ server.on('connection', function(client){
 Note that we've also supplied `path: 'binary-endpoint'` to set an endpoint that doesn't clash with the original application.  When creating the client you can connect to this endpoint with:
 
 ```js
-var client = new BinaryClient('ws://localhost:1337/binary-endpoint');
+var client = new BinaryClient('ws://localhost:9000/binary-endpoint');
 ```
 
 ### Express.js
 
-If your app runs on express js - the normal `app.listen(3000)` won't give you access to the base http server, instead you should create the a server and pass the express app as a request listener:
+If your app runs on express js - the normal `app.listen(9000)` won't give you access to the base http server, instead you should create the a server and pass the express app as a request listener:
 
 ```js
 var http = require('http');
 var app = require('express')();
 
 // create a server with the express app as a listener
-var server = http.createServer(app).listen(3000);
+var server = http.createServer(app).listen(9000);
 
 // attach BinaryServer to the base http server
 ```
