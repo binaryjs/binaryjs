@@ -118,17 +118,17 @@ var http = require('http');
 var server = http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end('Hello World\n');
-}).listen(9000, '127.0.0.1');
+}).listen(9000);
 
 var BinaryServer = require('binaryjs').BinaryServer,
     fs = require('fs');
 
 // Create a BinaryServer attached to our existing server
-var binaryserver = new BinaryServer({server: server, path: 'binary-endpoint'});
+var binaryserver = new BinaryServer({server: server, path: '/binary-endpoint'});
 
-server.on('connection', function(client){
+binaryserver.on('connection', function(client){
   var file = fs.createReadStream(__dirname + '/flower.png');
-  client.send(file); 
+  client.send(file);
 });
 ```
 
