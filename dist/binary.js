@@ -1,4 +1,4 @@
-/*! binary.js build:0.1.8, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
+/*! binary.js build:0.1.9, development. Copyright(c) 2012 Eric Zhang <eric@ericzhang.com> MIT Licensed */
 (function(exports){
 var binaryFeatures = {};
 binaryFeatures.useBlobBuilder = (function(){
@@ -1525,8 +1525,8 @@ BinaryClient.prototype.createStream = function(meta){
   return binaryStream;
 };
 
-BinaryClient.prototype.close = BinaryClient.prototype.destroy = function(code, message) {
-  this._socket.close(code, message);
+BinaryClient.prototype.close = BinaryClient.prototype.destroy = function() {
+  this._socket.close();
 };
 
 exports.BinaryClient = BinaryClient;
