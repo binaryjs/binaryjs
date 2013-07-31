@@ -36,6 +36,10 @@ Client
 
 ## Changelog
 
+0.1.9
+
+- Fix close internal socket (removing not supported code/message parameters)
+
 0.1.8
 
 - Does not throw exceptions when writing on a stream with closed underlying socket
