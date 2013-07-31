@@ -110,6 +110,49 @@ client.on('stream', function(stream, meta){
 });
 ```
 
+## Integrating with an existing node app
+BinaryServer can listen on an existing [http.Server](http://nodejs.org/api/http.html#http_class_http_server) by specifying the `server` parameter in the options. See [fileupload](https://github.com/binaryjs/binaryjs/tree/master/examples/fileupload) example of this.
+
+```js
+var http = require('http');
+var server = http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');
+}).listen(9000);
+
+var BinaryServer = require('binaryjs').BinaryServer,
+    fs = require('fs');
+
+// Create a BinaryServer attached to our existing server
+var binaryserver = new BinaryServer({server: server, path: '/binary-endpoint'});
+
+binaryserver.on('connection', function(client){
+  var file = fs.createReadStream(__dirname + '/flower.png');
+  client.send(file);
+});
+```
+
+Note that we've also supplied `path: 'binary-endpoint'` to set an endpoint that doesn't clash with the original application.  When creating the client you can connect to this endpoint with:
+
+```js
+var client = new BinaryClient('ws://localhost:9000/binary-endpoint');
+```
+
+### Express.js
+
+If your app runs on express js - the normal `app.listen(9000)` won't give you access to the base http server, instead you should create the a server and pass the express app as a request listener:
+
+```js
+var http = require('http');
+var app = require('express')();
+
+// create a server with the express app as a listener
+var server = http.createServer(app).listen(9000);
+
+// attach BinaryServer to the base http server
+```
+
+
 ## Running the example
 Run the server, and open index.html in your favorite binary socket compatible browser, and you'll see a lovely flower!
 
