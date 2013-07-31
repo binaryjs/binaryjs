@@ -1,4 +1,4 @@
-var BinaryServer = require('binaryjs').BinaryServer;
+var BinaryServer = require('../../').BinaryServer;
 var fs = require('fs');
 
 // Start Binary.js server
