@@ -3,7 +3,7 @@
 BinaryJS
 ========
 
-We're under development! 
+We're under development!
 
 For docs and more info
 http://binaryjs.com
@@ -21,7 +21,7 @@ $ npm install binaryjs
 or from Git
 ```console
 $ git clone git://github.com/binaryjs/binaryjs.git
-$ cd binaryjs 
+$ cd binaryjs
 $ npm install -g
 ```
 
@@ -35,6 +35,9 @@ Client
 
 
 ## Changelog
+0.2.0
+
+- Fix critical BinaryPack issue prevent TypedArrays of 16 bit or greater from being serialized correctly
 
 0.1.9
 
