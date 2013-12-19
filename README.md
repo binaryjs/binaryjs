@@ -35,6 +35,10 @@ Client
 
 
 ## Changelog
+0.2.1
+
+- Update js-binarypack to 0.0.7, fast utf8 support now on by default.
+
 0.2.0
 
 - Fix critical BinaryPack issue prevent TypedArrays of 16 bit or greater from being serialized correctly
