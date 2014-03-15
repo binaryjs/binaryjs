@@ -805,6 +805,7 @@ var util = {
   }(this))
 };
 
+exports.util = util;
 
 
 function Stream() {
@@ -897,6 +898,8 @@ Stream.prototype.pipe = function(dest, options) {
   // Allow for unix-like usage: A.pipe(B).pipe(C)
   return dest;
 };
+
+exports.Stream = Stream;
 function BlobReadStream(source, options){
   Stream.call(this);
   
