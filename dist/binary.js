@@ -629,7 +629,7 @@ EventEmitter.prototype.addListener = function(type, listener, scope, once) {
     // Adding the second element, need to change to array.
     this._events[type] = [this._events[type], listener];
   }
-  return this;
+  
 };
 
 EventEmitter.prototype.on = EventEmitter.prototype.addListener;
@@ -1283,8 +1283,7 @@ BinaryStream.prototype.write = function(data) {
     var out = this._write(2, data, this.id);
     return !this.paused && out;
   } else {
-    this.emit('error', new Error('Stream is not writable'));
-    return false;
+    throw new Error('Stream is not writable');
   }
 };
 
