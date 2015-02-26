@@ -35,6 +35,10 @@ Client
 
 
 ## Changelog
+0.2.2
+
+- Update js-binarypack to 0.0.9, removed unused check.
+
 0.2.1
 
 - Update js-binarypack to 0.0.7, fast utf8 support now on by default.

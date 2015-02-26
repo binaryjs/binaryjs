@@ -17,24 +17,13 @@ binaryFeatures.useArrayBufferView = !binaryFeatures.useBlobBuilder && (function(
     return true;
   }
 })();
-binaryFeatures.supportsBinaryWebsockets = (function(){
-  try {
-    var wstest = new WebSocket('ws://null');
-    wstest.onerror = function(){};
-    if (typeof(wstest.binaryType) !== "undefined") {
-      return true;
-    } else {
-      return false;
-    }
-    wstest.close();
-    wstest = null;
-  } catch (e) {
-    return false;
-  }
-})();
 
-exports.binaryFeatures = binaryFeatures;
-exports.BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
+module.exports.binaryFeatures = binaryFeatures;
+var BlobBuilder = module.exports.BlobBuilder;
+if (typeof window != 'undefined') {
+  BlobBuilder = module.exports.BlobBuilder = window.WebKitBlobBuilder ||
+    window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
+}
 
 function BufferBuilder(){
   this._pieces = [];
@@ -73,7 +62,12 @@ BufferBuilder.prototype.getBuffer = function() {
     return new Blob(this._parts);
   }
 };
-exports.BinaryPack = {
+
+module.exports.BufferBuilder = BufferBuilder;
+var BufferBuilder = require('./bufferbuilder').BufferBuilder;
+var binaryFeatures = require('./bufferbuilder').binaryFeatures;
+
+var BinaryPack = {
   unpack: function(data){
     var unpacker = new Unpacker(data);
     return unpacker.unpack();
@@ -86,6 +80,8 @@ exports.BinaryPack = {
   }
 };
 
+module.exports = BinaryPack;
+
 function Unpacker (data){
   // Data is ArrayBuffer
   this.index = 0;
@@ -93,7 +89,6 @@ function Unpacker (data){
   this.dataView = new Uint8Array(this.dataBuffer);
   this.length = this.dataBuffer.byteLength;
 }
-
 
 Unpacker.prototype.unpack = function(){
   var type = this.unpack_uint8();
@@ -400,7 +395,6 @@ Packer.prototype.pack_bin = function(blob){
     this.pack_uint32(length);
   } else{
     throw new Error('Invalid length');
-    return;
   }
   this.bufferBuilder.append(blob);
 }
@@ -418,7 +412,6 @@ Packer.prototype.pack_string = function(str){
     this.pack_uint32(length);
   } else{
     throw new Error('Invalid length');
-    return;
   }
   this.bufferBuilder.append(str);
 }
@@ -629,7 +622,7 @@ EventEmitter.prototype.addListener = function(type, listener, scope, once) {
     // Adding the second element, need to change to array.
     this._events[type] = [this._events[type], listener];
   }
-  return this;
+  
 };
 
 EventEmitter.prototype.on = EventEmitter.prototype.addListener;
