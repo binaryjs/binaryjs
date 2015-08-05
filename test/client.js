@@ -37,6 +37,21 @@ describe('BinaryClient', function(){
         client.createStream();
       });
     });
+    it('should receive notification', function(done){
+      server.on('connection', function(client){
+        client.on('stream', function(stream){
+            stream.sendNotification("ready");
+        });
+      });
+      var client = new BinaryClient(serverUrl);
+      client.on('open', function(){
+        client.createStream().on('notify', function(event){
+          if('ready' === event) {
+            done();
+          }
+        });
+      });
+    });
   });
   
   describe('sending data', function(){
