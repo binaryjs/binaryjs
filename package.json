@@ -4,6 +4,10 @@
   "description": "Binary realtime streaming made easy",
   "version": "0.2.2",
   "homepage": "http://binaryjs.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/binaryjs/binaryjs.git"
+  },
   "main": "lib/server.js",
   "scripts": {
     "test": "make test"
@@ -12,7 +16,7 @@
     "node": ">=0.10.20"
   },
   "dependencies": {
-    "ws": "git://github.com/carck/ws.git",
+    "streamws": ">=0.1.1",
     "binarypack": ">=0.0.4",
     "streamers": ">=0.1.0"
   },
