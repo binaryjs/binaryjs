@@ -2,7 +2,7 @@
   "author": "Eric Zhang (http://ericzhang.com)",
   "name": "binaryjs",
   "description": "Binary realtime streaming made easy",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "homepage": "http://binaryjs.com",
   "main": "lib/server.js",
   "scripts": {
