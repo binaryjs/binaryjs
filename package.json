@@ -2,21 +2,17 @@
   "author": "Eric Zhang (http://ericzhang.com)",
   "name": "binaryjs",
   "description": "Binary realtime streaming made easy",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "homepage": "http://binaryjs.com",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/binaryjs/binaryjs.git"
-  },
   "main": "lib/server.js",
   "scripts": {
     "test": "make test"
   },
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=0.10.20"
   },
   "dependencies": {
-    "streamws": ">=0.1.1",
+    "ws": "git://github.com/carck/ws.git#0.8.2",
     "binarypack": ">=0.0.4",
     "streamers": ">=0.1.0"
   },
