@@ -12,7 +12,7 @@
     "node": ">=0.10.20"
   },
   "dependencies": {
-    "ws": "git://github.com/carck/ws.git#e797c1e3c5646af33858592b5ecd35220adc8876",
+    "ws": "git://github.com/carck/ws.git#9ada0bbf7e4a6e49744d8457c48ac253b3f7a5c6",
     "binarypack": ">=0.0.4",
     "streamers": ">=0.1.0"
   },
